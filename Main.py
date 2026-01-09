@@ -21,6 +21,7 @@ from kivy.core.window import Window
 
 Window.size = (2340//2, 1080//2)
 IMAGE_BY_DEFAULT_PATH = 'image_not_found.jpg'
+FONT_SIZE_BY_DEFAULT = 16
 
 def convert_cv2_frame_to_kivy_texture(frame):
     buf1 = cv2.flip(frame, 0)
@@ -31,10 +32,22 @@ def convert_cv2_frame_to_kivy_texture(frame):
     return image_texture
 
 class LastSavedImage(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, texture = IMAGE_BY_DEFAULT_PATH, **kwargs):
         super(LastSavedImage, self).__init__(**kwargs)
         self.orientation = 'vertical'
-        self.image = Image(source= IMAGE_BY_DEFAULT_PATH)
+        self.image = Image(source= texture)
+        self.label = Label(text=f'Last saved', font_size= FONT_SIZE_BY_DEFAULT)
+
+        self.add_widget(self.image)
+        self.add_widget(self.label)
+
+    @property
+    def texture(self):
+        return self.image.texture
+
+    @texture.setter
+    def texture(self, texture):
+        self.image.texture = texture
 
 class KivyCamera(Image):
     def __init__(self, capture, fps, **kwargs):
@@ -73,17 +86,17 @@ class ScannerApp(App):
         self.bottom_layout = BoxLayout(orientation='horizontal')  # два следующих
         self.frames_layout = GridLayout(cols=2)  # вид с камеры, контуры и финальная картинка
         self.right_panel_layout = AnchorLayout(anchor_x='center', anchor_y='center',
-                                               size_hint=(None, 1.0), width=200)  # центрирование для кнопок и тд
-        self.right_center_layout = BoxLayout(orientation='vertical', padding=20)  # кнопки
+                                               size_hint=(None, 1.0), width=250)  # центрирование для кнопок и тд
+        self.right_center_layout = BoxLayout(orientation='vertical', padding=10)  # кнопки
 
-        self.top_label = Label(text=f'Process: {self.current_process_state}')
+        self.top_label = Label(text=f'Process: {self.current_process_state}', font_size= FONT_SIZE_BY_DEFAULT)
 
         self.frame_images_list = [KivyCamera(capture=self.capture, fps=20)]  # [0] - camera frame
         for i in range(3): self.frame_images_list.append(Image(source= IMAGE_BY_DEFAULT_PATH, fit_mode= 'fill'))
 
         self.draw_process_checkbox = CheckBox(on_release=self.draw_process_toggle)
-        self.start_button = Button(text="Start", on_release=self.on_start_button)
-        self.last_saved_image_widget = Image(source= IMAGE_BY_DEFAULT_PATH)
+        self.start_button = Button(text=" START\nSAVING", font_size= FONT_SIZE_BY_DEFAULT, on_release=self.on_start_button)
+        self.last_saved_image_widget = LastSavedImage()
 
         self.main_layout.add_widget(self.top_layout)
         self.main_layout.add_widget(self.bottom_layout)
@@ -103,7 +116,24 @@ class ScannerApp(App):
             try:
                 self.contours_frame, self.main_contour_frame, self.result_frame = self.scanner.scan_process_frame(self.frame)
             except su.ContourNotFoundError as e:
+                SECOND_TRY_TIMEOUT = 1 # in sec's
+                print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds')
+                Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
+
+            try:
+                is_similar = self.scanner.is_similar_frames(self.previous_frame, self.result_frame)
+                if is_similar:
+                    print('Similar frames')
+                else:
+                    self.saver.save_image(self.result_frame)
+
+                    self.last_saved_image_widget.texture = convert_cv2_frame_to_kivy_texture(self.result_frame)
+                    print('Frame saved')
+            except Exception as e:
                 print(e)
+
+            self.previous_frame = self.result_frame
+
         self._update_image_textures()
 
     def build(self):
@@ -111,6 +141,7 @@ class ScannerApp(App):
         self.current_process_state = 'Nothing'
 
         self.capture = cv2.VideoCapture(0)
+        self.capture.set(10, 640)
         self.saver = slu.PCSaver("ScannedImages")
         self.scanner = Scanner()
         self.previous_frame = None
@@ -120,7 +151,7 @@ class ScannerApp(App):
         self.main_contour_frame = IMAGE_BY_DEFAULT
         self.result_frame = IMAGE_BY_DEFAULT
 
-        self.init_widgets_and_layouts()  # ваще вся инициализация всех виджетов и лейаутов
+        self.init_widgets_and_layouts()
 
         Clock.schedule_interval(self.update, UPDATE_TIMEOUT)
         self.update(delta= 1)

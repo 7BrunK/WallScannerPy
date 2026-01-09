@@ -43,13 +43,10 @@ class Scanner:
         delta = abs(len(contours1.contours) - len(contours2.contours))
 
         delta_ratio = delta / max_len
-        print(delta_ratio, end = ' ')
         if delta_ratio > similarity_threshold:
             return False
-        print('success')
         diff = cv2.absdiff(previous_frame, current_frame)
         mean_diff = np.mean(diff)
-        print(mean_diff)
         return mean_diff < pixel_treshold
 
 if __name__ == '__main__':
