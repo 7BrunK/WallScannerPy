@@ -11,6 +11,7 @@ class Contours:
     frame = None
     contours = None
     main_contour = None
+    features = None
 
     PROCESSING_SIZE: tuple # (width, height)
     ORIGINAL_TO_PROCESSING_SIZE_RATIO: np.ndarray
@@ -39,8 +40,8 @@ class Contours:
         self.frame_blur = cv2.GaussianBlur(self.frame_gray, self.KSIZE, 1)
         self.frame_canny = cv2.Canny(self.frame_blur, self.LOW_THRESHOLD, self.HIGH_THRESHOLD)
 
-    def find_contours(self):
-        self.contours, hierarchy = cv2.findContours(self.frame_canny, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    def find_contours(self, retr = cv2.RETR_LIST, approx = cv2.CHAIN_APPROX_SIMPLE):
+        self.contours, hierarchy = cv2.findContours(self.frame_canny, retr, approx)
         if type(self.contours) == type(None):
             raise ContourNotFoundError("No contours found")
         return self.contours
@@ -59,9 +60,9 @@ class Contours:
             raise ContourNotFoundError("No main contour found")
         return self.main_contour
 
-    def draw_contours(self, contours, color = (255, 0, 0)):
+    def draw_contours(self, contours, color = (255, 0, 0), thickness = 3):
         frameContours = self.frame_resized.copy()
-        cv2.drawContours(frameContours, contours, -1, color, thickness = 3)
+        cv2.drawContours(frameContours, contours, -1, color, thickness = thickness)
         return frameContours
 
     def get_corners(self, contour):
