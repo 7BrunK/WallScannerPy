@@ -9,16 +9,13 @@ def get_files_from_folder(folder_path):
     return total_paths
 
 class Saver:
-    image_index = 0
-
+    image_index = 1
     def __init__(self):
         pass
     def save_image(self, image):
         pass
 
 class PCSaver(Saver):
-    SAVE_FOLDER_PATH = ""
-
     def __init__(self, save_folder_path):
         self.SAVE_FOLDER_PATH = save_folder_path
 
