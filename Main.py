@@ -41,31 +41,27 @@ class ReportLabel(Label):
     def update(self, saving_is_active: bool):
         self.text = f'Saving is active: {saving_is_active}'
 
-class DrawProcessCheckBox(BoxLayout):
+class ToggleDrawProcessButton(ToggleButton):
     def __init__(self, owner_app: App, **kwargs):
-        super(DrawProcessCheckBox, self).__init__(**kwargs)
-        self.orientation = 'horizontal'
+        super(ToggleDrawProcessButton, self).__init__(**kwargs)
         self.owner_app = owner_app
+        self.normal_state()
 
-        self.label = Label(text= 'Draw process - ',
-                           font_size=FONT_SIZE_BY_DEFAULT,
-                           halign='right',
-                           valign='center',
-                           size_hint=(1, None),
-                           pos_hint={'right': 1.0, 'center_y': 0.5})
-        self.checkbox = CheckBox(on_release= self.on_checkbox_release,
-                                 size_hint=(1, None),
-                                 pos_hint={'center_x': 1.0, 'center_y': 0.5})
-        self.add_widget(self.label)
-        self.add_widget(self.checkbox)
+    def on_release(self):
+        if self.state == 'down': self.down_state()
+        else: self.normal_state()
 
-    def on_checkbox_release(self, checkbox):
-        if self.checkbox.active:
-            for frame_image in self.owner_app.frame_images_list[1:]:
-                self.owner_app.frames_layout.add_widget(frame_image)
-        else:
-            for frame_image in self.owner_app.frame_images_list[1:]:
-                self.owner_app.frames_layout.remove_widget(frame_image)
+    def normal_state(self):
+        self.background_color = [1, 0, 0, 1]
+        self.text = 'DRAW PROCESS\nIS DISABLED'
+        for frame_image in self.owner_app.frame_images_list[1:]:
+            self.owner_app.frames_layout.remove_widget(frame_image)
+
+    def down_state(self):
+        self.background_color = [0, 1, 0, 1]
+        self.text = 'DRAW PROCESS\nIS ENABLED'
+        for frame_image in self.owner_app.frame_images_list[1:]:
+            self.owner_app.frames_layout.add_widget(frame_image)
 
 class ToggleSavingButton(ToggleButton):
     def __init__(self, owner_app: App, **kwargs):
@@ -93,10 +89,18 @@ class LastSavedImage(BoxLayout):
         self.orientation = 'vertical'
 
         self.image = Image(
-            source= texture)
+            source= texture,
+            fit_mode= 'scale-down',
+            size_hint= (1.0, None),
+            pos_hint= {'top': 1.0, 'center_x': 0.5})
         self.label = Label(
             text=f'Last saved',
-            font_size= FONT_SIZE_BY_DEFAULT)
+            font_size= FONT_SIZE_BY_DEFAULT,
+            text_size= self.size,
+            valign= 'top',
+            halign= 'center',
+            size_hint= (None, None),
+            pos_hint= {'top': 0.0, 'center_x': 0.5})
 
         self.add_widget(self.image)
         self.add_widget(self.label)
@@ -154,9 +158,11 @@ class ScannerApp(App):
         self.frame_images_list = [KivyCamera(capture=self.capture, fps=20)]  # [0] - camera frame
         for i in range(3): self.frame_images_list.append(Image(source= IMAGE_BY_DEFAULT_PATH, fit_mode= 'fill'))
 
-        self.draw_process_checkbox = DrawProcessCheckBox(owner_app=self)
-        self.toggle_saving_button = ToggleSavingButton(owner_app=self, font_size=FONT_SIZE_BY_DEFAULT)
-        self.last_saved_image_widget = LastSavedImage()
+        self.toggle_draw_process_button = ToggleDrawProcessButton(owner_app=self,
+                                                                  font_size=FONT_SIZE_BY_DEFAULT)
+        self.toggle_saving_button = ToggleSavingButton(owner_app=self,
+                                                       font_size=FONT_SIZE_BY_DEFAULT)
+        self.last_saved_image_widget = LastSavedImage(pos_hint= {'center_x': 0.5, 'bottom': 0.0})
 
         self.main_layout.add_widget(self.top_layout)
         self.main_layout.add_widget(self.bottom_layout)
@@ -164,11 +170,11 @@ class ScannerApp(App):
         self.bottom_layout.add_widget(self.frames_layout)
         self.bottom_layout.add_widget(self.right_panel_layout)
         self.frames_layout.add_widget(self.frame_images_list[0])
-        self.right_panel_layout.add_widget(self.draw_process_checkbox)
+        self.right_panel_layout.add_widget(self.toggle_draw_process_button)
         self.right_panel_layout.add_widget(self.toggle_saving_button)
         self.right_panel_layout.add_widget(self.last_saved_image_widget)
 
-    def save_request(self, frame):
+    def _save_request(self, frame):
         if self.saving_is_active:
             try:
                 self.saver.save_image(self.result_frame)
@@ -192,13 +198,13 @@ class ScannerApp(App):
                 Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
             else:
                 if self.previous_frame is None:
-                    self.save_request(self.result_frame)
+                    self._save_request(self.result_frame)
                 else:
                     is_similar = self.scanner.is_similar_frames(self.previous_frame, self.result_frame)
                     if is_similar:
                         print('Similar frames')
                     else:
-                        self.save_request(self.result_frame)
+                        self._save_request(self.result_frame)
         self._update_image_textures()
 
     def build(self):

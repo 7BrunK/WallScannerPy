@@ -5,20 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6eec897b-9700-4992-b7a0-53e5c7dba263" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/scanner.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/1.py" beforeDir="false" afterPath="$PROJECT_DIR$/1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SaveLoadUtlis.py" beforeDir="false" afterPath="$PROJECT_DIR$/SaveLoadUtlis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/1darker.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/1lighter.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484548_y.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484548_y_changed.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484551_y.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484552_y.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484553_y.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
