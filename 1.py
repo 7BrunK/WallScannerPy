@@ -12,6 +12,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.checkbox import CheckBox
 from kivy.core.window import Window
+from kivy import platform
 
 class TestApp(App):
     def build(self):
@@ -25,6 +26,7 @@ class TestApp(App):
         main.add_widget(button1)
         main.add_widget(button2)
         MAIN.add_widget(main)
+        print(platform)
         return MAIN
 
 if __name__ == "__main__":

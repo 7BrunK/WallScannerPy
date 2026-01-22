@@ -1,11 +1,11 @@
 import cv2
 from kivy.uix.togglebutton import ToggleButton
-from pygments.styles.dracula import background
 
 import ScannerUtlis as su
 import SaveLoadUtlis as slu
 from Scanner import Scanner
 
+from kivy import platform
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image
