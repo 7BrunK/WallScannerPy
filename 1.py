@@ -13,20 +13,14 @@ from kivy.uix.label import Label
 from kivy.uix.checkbox import CheckBox
 from kivy.core.window import Window
 from kivy import platform
+from main import KivyCamera
+import cv2
 
 class TestApp(App):
     def build(self):
         MAIN = BoxLayout(orientation='vertical')
-        button = Button(text='MAIN')
-        MAIN.add_widget(button)
-
-        main = BoxLayout(orientation='vertical')
-        button1 = Button(text='1')
-        button2 = Button(text='2')
-        main.add_widget(button1)
-        main.add_widget(button2)
-        MAIN.add_widget(main)
-        print(platform)
+        camera = KivyCamera(capture= cv2.VideoCapture(0), fps=20)
+        MAIN.add_widget(camera)
         return MAIN
 
 if __name__ == "__main__":

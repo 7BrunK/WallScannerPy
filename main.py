@@ -3,6 +3,7 @@ from kivy.uix.togglebutton import ToggleButton
 
 import ScannerUtlis as su
 import SaveLoadUtlis as slu
+import numpy as np
 from Scanner import Scanner
 
 from kivy import platform
@@ -27,7 +28,8 @@ FONT_SIZE_BY_DEFAULT = 16
 
 def convert_cv2_frame_to_kivy_texture(frame):
     buf1 = cv2.flip(frame, 0)
-    buf = buf1.tostring()
+    #buf = buf1.tostring()
+    buf = buf1.tobytes()
     image_texture = Texture.create(
         size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
     image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
