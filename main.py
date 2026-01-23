@@ -26,15 +26,6 @@ Window.size = (2340//2, 1080//2)
 IMAGE_BY_DEFAULT_PATH = 'image_not_found.jpg'
 FONT_SIZE_BY_DEFAULT = 16
 
-def convert_cv2_frame_to_kivy_texture(frame):
-    buf1 = cv2.flip(frame, 0)
-    #buf = buf1.tostring()
-    buf = buf1.tobytes()
-    image_texture = Texture.create(
-        size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-    image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
-    return image_texture
-
 class ReportLabel(Label):
     def __init__(self, **kwargs):
         super(ReportLabel, self).__init__(**kwargs)
@@ -125,7 +116,7 @@ class KivyCamera(Image):
 
     def update(self, dt):
         success, frame = self.capture.read()
-        if success: self.texture = convert_cv2_frame_to_kivy_texture(frame)
+        if success: self.texture = slu.convert_cv2_frame_to_kivy_texture(frame)
 
 class ScannerApp(App):
     _saving_is_active: bool = False
@@ -139,7 +130,7 @@ class ScannerApp(App):
     def _update_image_textures(self):
         for frame, index in zip([self.contours_frame, self.main_contour_frame, self.result_frame], range(1, 4)):
             try:
-                self.frame_images_list[index].texture = convert_cv2_frame_to_kivy_texture(frame)
+                self.frame_images_list[index].texture = slu.convert_cv2_frame_to_kivy_texture(frame)
             except Exception:
                 self.frame_images_list[index].texture = Texture(source= IMAGE_BY_DEFAULT_PATH)
 
@@ -184,7 +175,7 @@ class ScannerApp(App):
                 print('Saving failed with error: ', e)
             else:
                 print('Saving is successful')
-            self.last_saved_image_widget.texture = convert_cv2_frame_to_kivy_texture(self.result_frame)
+            self.last_saved_image_widget.texture = slu.convert_cv2_frame_to_kivy_texture(self.result_frame)
             self.previous_frame = self.result_frame
         else:
             print('An attempt was made to save, but saving is paused')
@@ -214,7 +205,10 @@ class ScannerApp(App):
 
         self.capture = cv2.VideoCapture(0)
         self.capture.set(10, 640)
-        self.saver = slu.PCSaver("ScannedImages")
+        if platform == "win":
+            self.saver = slu.PCSaver("ScannedImages")
+        else:
+            self.saver = slu.AndroidSaver()
         self.scanner = Scanner()
         self.previous_frame = None
 

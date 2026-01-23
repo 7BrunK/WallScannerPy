@@ -21,6 +21,7 @@ class TestApp(App):
         MAIN = BoxLayout(orientation='vertical')
         camera = KivyCamera(capture= cv2.VideoCapture(0), fps=20)
         MAIN.add_widget(camera)
+        print(platform)
         return MAIN
 
 if __name__ == "__main__":

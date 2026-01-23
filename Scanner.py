@@ -42,7 +42,10 @@ class Scanner:
             max_len = max(max_len, contour_len)
         delta = abs(len(contours1.contours) - len(contours2.contours))
 
-        delta_ratio = delta / max_len
+        try:
+            delta_ratio = delta / max_len
+        except ZeroDivisionError:
+            return False
         if delta_ratio > similarity_threshold:
             return False
         diff = cv2.absdiff(previous_frame, current_frame)
