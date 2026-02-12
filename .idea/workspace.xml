@@ -9,7 +9,6 @@
       <change beforePath="$PROJECT_DIR$/1.py" beforeDir="false" afterPath="$PROJECT_DIR$/1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SaveLoadUtlis.py" beforeDir="false" afterPath="$PROJECT_DIR$/SaveLoadUtlis.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Scanner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scanner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,28 +33,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.1.executor": "Run",
-    "Python.EbuchiyCalc.executor": "Run",
-    "Python.Main.executor": "Run",
-    "Python.PathUtlis.executor": "Run",
-    "Python.Scanner.executor": "Run",
-    "Python.ScannerUtlis.executor": "Run",
-    "Python.checkbox.executor": "Run",
-    "Python.code_antona.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.pong.executor": "Run",
-    "Python.жалк.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/BrunK_Files/ForCode/Projects/WallScanerPy",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.EbuchiyCalc.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.PathUtlis.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Scanner.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ScannerUtlis.executor&quot;: &quot;Run&quot;,
+    &quot;Python.checkbox.executor&quot;: &quot;Run&quot;,
+    &quot;Python.code_antona.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pong.executor&quot;: &quot;Run&quot;,
+    &quot;Python.жалк.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/BrunK_Files/ForCode/Projects/WallScanerPy&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy" />
@@ -109,8 +108,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.1" />
         <item itemvalue="Python.Scanner" />
+        <item itemvalue="Python.1" />
       </list>
     </recent_temporary>
   </component>

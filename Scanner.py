@@ -64,8 +64,8 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(0)
     cap.set(10, 640)
 
-    Saver = slu.PCSaver(SAVE_FOLDER_PATH)
-    Scanner = Scanner()
+    saver = slu.PCSaver(SAVE_FOLDER_PATH)
+    scanner = Scanner()
 
     index_of_test_image = 0
     previous_frame = None
@@ -77,7 +77,7 @@ if __name__ == '__main__':
             frame = cv2.imread(test_image_path)
 
         try:
-            fContours, fMainContour, fWarped = Scanner.scan_process_frame(frame)
+            fContours, fMainContour, fWarped = scanner.scan_process_frame(frame)
         except su.ContourNotFoundError as e:
             print(e)
             if not CAM_FEED:
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         if key == ord("q"):
             break
         if key == ord("s"):
-            Saver.save_image(fWarped)
+            saver.save_image(fWarped)
         if key == ord("p"):
             previous_frame = fWarped
             print("Previous Frame saved")

@@ -16,10 +16,17 @@ from kivy import platform
 from main import KivyCamera
 import cv2
 
+import ScannerUtlis as su
+import SaveLoadUtlis as slu
+import numpy as np
+from Scanner import Scanner
+
 class TestApp(App):
     def build(self):
         MAIN = BoxLayout(orientation='vertical')
         camera = KivyCamera(capture= cv2.VideoCapture(0), fps=20)
+        self.saver = slu.PCSaver("ScannedImages")
+        self.saver.save_image(camera.texture)
         MAIN.add_widget(camera)
         print(platform)
         return MAIN
