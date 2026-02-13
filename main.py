@@ -200,8 +200,11 @@ class ScannerApp(App):
                         self._save_request(self.result_frame)
         self._update_image_textures()
 
+## TODO: Баг фикс, шакалит качество при конвертации, возможно*
+## в сканере норм
+
     def build(self):
-        UPDATE_TIMEOUT: int = 3 # in sec's
+        UPDATE_TIMEOUT: int = 1 # in sec's
 
         self.capture = cv2.VideoCapture(0)
         self.capture.set(10, 640)
