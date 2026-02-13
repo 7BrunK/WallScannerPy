@@ -180,7 +180,9 @@ class ScannerApp(App):
         else:
             print('An attempt was made to save, but saving is paused')
 
+    _update_call_is_already_in_queue: bool = False
     def update(self, delta):
+        self._update_call_is_already_in_queue = False
         success, self.frame = self.capture.read()
         if success:
             try:
@@ -188,7 +190,9 @@ class ScannerApp(App):
             except su.ContourNotFoundError as e:
                 SECOND_TRY_TIMEOUT = 3 # in sec's
                 print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds')
-                Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
+                if not self._update_call_is_already_in_queue:
+                    Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
+                    _update_call_is_already_in_queue = True
             else:
                 if self.previous_frame is None:
                     self._save_request(self.result_frame)
@@ -199,9 +203,6 @@ class ScannerApp(App):
                     else:
                         self._save_request(self.result_frame)
         self._update_image_textures()
-
-## TODO: Баг фикс, шакалит качество при конвертации, возможно*
-## в сканере норм
 
     def build(self):
         UPDATE_TIMEOUT: int = 1 # in sec's

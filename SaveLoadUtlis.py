@@ -20,26 +20,6 @@ def convert_cv2_frame_to_kivy_texture(frame):
     image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
     return image_texture
 
-class fake_camera():
-    def __init__(self):
-        self.IMAGE_FOLDER_PATH: str = "TestImages"
-        self.IMAGE_PATHS: list = get_files_from_folder(self.IMAGE_FOLDER_PATH)
-        self.COUNT_IMAGES: int = len(self.IMAGE_PATHS)
-
-        self.index_of_test_image = 0
-        self.test_image_path = self.IMAGE_PATHS[self.index_of_test_image % self.COUNT_IMAGES]
-
-    def update(self):
-        key = cv2.waitKey(1)
-        if key == ord("d"):
-            self.index_of_test_image += 1
-        elif key == ord("a"):
-            self.index_of_test_image -= 1
-
-    def read(self):
-        test_image_path = self.IMAGE_PATHS[self.index_of_test_image % self.COUNT_IMAGES]
-        return cv2.imread(test_image_path)
-
 class Saver:
     image_index = 1
     def __init__(self):

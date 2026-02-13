@@ -15,6 +15,7 @@ class Contours:
 
     PROCESSING_SIZE: tuple # (width, height)
     ORIGINAL_TO_PROCESSING_SIZE_RATIO: np.ndarray
+    MIN_MAIN_RECT_AREA_RATIO_FROM_ALL_FRAME: float
 
     KSIZE = None
     LOW_THRESHOLD = None
@@ -25,16 +26,21 @@ class Contours:
     frame_blur = None
     frame_canny = None
 
-    def __init__(self, frame, processing_size = (640, 480), ksize = (3, 3), low_threshold = 10, high_threshold = 120):
+    def __init__(self, frame, processing_size = (640, 480), ksize = (3, 3), low_threshold = 10, high_threshold = 120, min_main_rect_area_ratio_from_all_frame = 0.15):
         self.frame = frame
         self.PROCESSING_SIZE = processing_size
         self.KSIZE = ksize
         self.LOW_THRESHOLD = low_threshold
         self.HIGH_THRESHOLD = high_threshold
+        self.MIN_MAIN_RECT_AREA_RATIO_FROM_ALL_FRAME = min_main_rect_area_ratio_from_all_frame
 
     def preprocess_frame(self):
         original_size = self.frame.shape[:2][::-1]
         self.ORIGINAL_TO_PROCESSING_SIZE_RATIO = np.asarray([original_size[i] / self.PROCESSING_SIZE[i] for i in range(2)], dtype = np.float32)
+        self.MIN_MAIN_RECT_AREA = self.PROCESSING_SIZE[0] * self.PROCESSING_SIZE[1] * self.MIN_MAIN_RECT_AREA_RATIO_FROM_ALL_FRAME
+        self.MIN_THRESHOLD_AREA = self.PROCESSING_SIZE[0] * self.PROCESSING_SIZE[1] * 0.005
+        print(self.MIN_THRESHOLD_AREA)
+
         self.frame_resized = cv2.resize(self.frame, self.PROCESSING_SIZE)
         self.frame_gray = cv2.cvtColor(self.frame_resized, cv2.COLOR_BGR2GRAY)
         self.frame_blur = cv2.GaussianBlur(self.frame_gray, self.KSIZE, 1)
@@ -46,11 +52,11 @@ class Contours:
             raise ContourNotFoundError("No contours found")
         return self.contours
 
-    def find_main_contour(self, min_threshold_area = 1000):
+    def find_main_contour(self):
         max_founded_area = 0
         for contour in self.contours:
             area = cv2.contourArea(contour)
-            if area > min_threshold_area:
+            if area > self.MIN_THRESHOLD_AREA:
                 corners = self.get_corners(contour)
                 if len(corners) == 4 and area > max_founded_area:
                     self.main_contour = contour # Фиксируем только наибольший 4-ник
