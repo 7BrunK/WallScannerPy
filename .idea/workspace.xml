@@ -6,20 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="6eec897b-9700-4992-b7a0-53e5c7dba263" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SaveLoadUtlis.py" beforeDir="false" afterPath="$PROJECT_DIR$/SaveLoadUtlis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ScannedImages/7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/1moved.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/TestImages/1moved.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/42f757345835d2e04c650f7d9ca27b9a.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/TestImages/42f757345835d2e04c650f7d9ca27b9a.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/photo_5310276575725484549_y.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/TestImages/photo_5310276575725484549_y.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/photo_5310276575725484550_y.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/TestImages/photo_5310276575725484550_y.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ScannerUtlis.py" beforeDir="false" afterPath="$PROJECT_DIR$/ScannerUtlis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/1moved.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/42f757345835d2e04c650f7d9ca27b9a.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484549_y.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484550_y.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +60,9 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy" />
+      <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy\TestImages" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy\TestImages" />
     </key>
   </component>

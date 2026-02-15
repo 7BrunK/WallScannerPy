@@ -39,7 +39,6 @@ class Contours:
         self.ORIGINAL_TO_PROCESSING_SIZE_RATIO = np.asarray([original_size[i] / self.PROCESSING_SIZE[i] for i in range(2)], dtype = np.float32)
         self.MIN_MAIN_RECT_AREA = self.PROCESSING_SIZE[0] * self.PROCESSING_SIZE[1] * self.MIN_MAIN_RECT_AREA_RATIO_FROM_ALL_FRAME
         self.MIN_THRESHOLD_AREA = self.PROCESSING_SIZE[0] * self.PROCESSING_SIZE[1] * 0.005
-        print(self.MIN_THRESHOLD_AREA)
 
         self.frame_resized = cv2.resize(self.frame, self.PROCESSING_SIZE)
         self.frame_gray = cv2.cvtColor(self.frame_resized, cv2.COLOR_BGR2GRAY)
