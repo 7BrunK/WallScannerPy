@@ -1,25 +1,19 @@
 import cv2
-from kivy.uix.togglebutton import ToggleButton
 
 import ScannerUtlis as su
 import SaveLoadUtlis as slu
-import numpy as np
 from Scanner import Scanner
 
 from kivy import platform
 from kivy.app import App
-from kivy.uix.widget import Widget
 from kivy.uix.image import Image
-from kivy.properties import ObjectProperty, NumericProperty, ReferenceListProperty
+from kivy.uix.camera import Camera
+from kivy.uix.togglebutton import ToggleButton
 from kivy.clock import Clock
 from kivy.graphics.texture import Texture
-from kivy.graphics import Color, Rectangle
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.uix.checkbox import CheckBox
 from kivy.core.window import Window
 
 Window.size = (2340//2, 1080//2)
@@ -106,17 +100,17 @@ class LastSavedImage(BoxLayout):
     def texture(self, texture):
         self.image.texture = texture
 
-class KivyCamera(Image):
-    def __init__(self, capture, fps, **kwargs):
-        super(KivyCamera, self).__init__(**kwargs)
-        self.allow_stretch = True
-        self.fit_mode = 'fill'
-        self.capture = capture
-        Clock.schedule_interval(self.update, 1.0 / fps)
-
-    def update(self, dt):
-        success, frame = self.capture.read()
-        if success: self.texture = slu.convert_cv2_frame_to_kivy_texture(frame)
+# class KivyCamera(Image):
+#     def __init__(self, capture, fps, **kwargs):
+#         super(KivyCamera, self).__init__(**kwargs)
+#         self.allow_stretch = True
+#         self.fit_mode = 'fill'
+#         self.capture = capture
+#         Clock.schedule_interval(self.update, 1.0 / fps)
+#
+#     def update(self, dt):
+#         success, frame = self.capture.read()
+#         if success: self.texture = slu.convert_cv2_frame_to_kivy_texture(frame)
 
 class ScannerApp(App):
     _saving_is_active: bool = False
@@ -148,7 +142,8 @@ class ScannerApp(App):
 
         self.top_label = ReportLabel(font_size=FONT_SIZE_BY_DEFAULT)
 
-        self.frame_images_list = [KivyCamera(capture=self.capture, fps=20)]  # [0] - camera frame
+        self.camera = Camera(play= True)
+        self.frame_images_list = [self.camera]  # [0] - camera frame
         for i in range(3): self.frame_images_list.append(Image(source= IMAGE_BY_DEFAULT_PATH, fit_mode= 'fill'))
 
         self.toggle_draw_process_button = ToggleDrawProcessButton(owner_app=self,
@@ -183,32 +178,40 @@ class ScannerApp(App):
     _update_call_is_already_in_queue: bool = False
     def update(self, delta):
         self._update_call_is_already_in_queue = False
-        success, self.frame = self.capture.read()
-        if success:
-            try:
-                self.contours_frame, self.main_contour_frame, self.result_frame = self.scanner.scan_process_frame(self.frame)
-            except su.ContourNotFoundError as e:
-                SECOND_TRY_TIMEOUT = 3 # in sec's
-                print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds')
-                if not self._update_call_is_already_in_queue:
-                    Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
-                    _update_call_is_already_in_queue = True
+
+        if not self.camera.texture:
+            return
+        self.frame = slu.convert_kivy_texture_to_cv2_frame(self.camera.texture)
+        try:
+            self.contours_frame, self.main_contour_frame, self.result_frame = self.scanner.scan_process_frame(self.frame)
+        except su.ContourNotFoundError as e:
+            SECOND_TRY_TIMEOUT = 3 # in sec's
+            print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds')
+            if not self._update_call_is_already_in_queue:
+                Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
+                _update_call_is_already_in_queue = True
+        else:
+            if self.previous_frame is None:
+                self._save_request(self.result_frame)
             else:
-                if self.previous_frame is None:
-                    self._save_request(self.result_frame)
+                is_similar = self.scanner.is_similar_frames(self.previous_frame, self.result_frame)
+                if is_similar:
+                    print('Similar frames')
                 else:
-                    is_similar = self.scanner.is_similar_frames(self.previous_frame, self.result_frame)
-                    if is_similar:
-                        print('Similar frames')
-                    else:
-                        self._save_request(self.result_frame)
+                    self._save_request(self.result_frame)
         self._update_image_textures()
+
+    # def on_start(self):
+    #     # Request camera permission
+    #     if permission.check_permission('camera') != 'granted':
+    #         permission.request_permission('camera')
+    #     # Request storage permission (if saving frames)
+    #     if permission.check_permission('write_external_storage') != 'granted':
+    #         permission.request_permission('write_external_storage')
 
     def build(self):
         UPDATE_TIMEOUT: int = 1 # in sec's
 
-        self.capture = cv2.VideoCapture(0)
-        self.capture.set(10, 640)
         if platform == "win":
             self.saver = slu.PCSaver("ScannedImages")
         else:
@@ -228,9 +231,6 @@ class ScannerApp(App):
         self.update(delta= 1)
 
         return self.main_layout
-
-    def on_stop(self):
-        self.capture.release()
 
 if __name__ == "__main__":
     ScannerApp().run()

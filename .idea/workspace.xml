@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6eec897b-9700-4992-b7a0-53e5c7dba263" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SaveLoadUtlis.py" beforeDir="false" afterPath="$PROJECT_DIR$/SaveLoadUtlis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +63,7 @@
       <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy\TestImages" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Scanner">
+  <component name="RunManager">
     <configuration name="1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="WallScanerPy" />
       <option name="ENV_FILES" value="" />
