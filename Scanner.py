@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from pyexpat import features
 
 import ScannerUtlis as su
 import SaveLoadUtlis as slu

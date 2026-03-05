@@ -1,7 +1,6 @@
 import os
 import cv2
 import numpy as np
-from kivy import platform
 from kivy.core.image import Image
 from kivy.graphics.texture import Texture
 

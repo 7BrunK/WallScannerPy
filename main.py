@@ -6,15 +6,18 @@ from Scanner import Scanner
 
 from kivy import platform
 from kivy.app import App
+from kivy.clock import Clock
+from kivy.graphics.texture import Texture
+from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.camera import Camera
 from kivy.uix.togglebutton import ToggleButton
-from kivy.clock import Clock
-from kivy.graphics.texture import Texture
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.core.window import Window
+
+#from pythonforandroid.recipes.android.src.android import permissions
 
 Window.size = (2340//2, 1080//2)
 IMAGE_BY_DEFAULT_PATH = 'image_not_found.jpg'
@@ -25,7 +28,7 @@ class ReportLabel(Label):
         super(ReportLabel, self).__init__(**kwargs)
         self.background_color = [1, 1, 0, 1]
 
-    def update(self, saving_is_active: bool):
+    def update(self, saving_is_active: bool, ):
         self.text = f'Saving is active: {saving_is_active}'
 
 class ToggleDrawProcessButton(ToggleButton):
@@ -100,18 +103,6 @@ class LastSavedImage(BoxLayout):
     def texture(self, texture):
         self.image.texture = texture
 
-# class KivyCamera(Image):
-#     def __init__(self, capture, fps, **kwargs):
-#         super(KivyCamera, self).__init__(**kwargs)
-#         self.allow_stretch = True
-#         self.fit_mode = 'fill'
-#         self.capture = capture
-#         Clock.schedule_interval(self.update, 1.0 / fps)
-#
-#     def update(self, dt):
-#         success, frame = self.capture.read()
-#         if success: self.texture = slu.convert_cv2_frame_to_kivy_texture(frame)
-
 class ScannerApp(App):
     _saving_is_active: bool = False
     def _get_saving_is_active_(self):
@@ -129,7 +120,8 @@ class ScannerApp(App):
                 self.frame_images_list[index].texture = Texture(source= IMAGE_BY_DEFAULT_PATH)
 
     def init_widgets_and_layouts(self):
-        self.main_layout = BoxLayout(orientation='vertical')
+        self.main_widget = Widget()
+        self.vbox_layout = BoxLayout(orientation='vertical')
         self.top_layout = BoxLayout(orientation='horizontal',
                                     size_hint=(1.0, None),
                                     height=FONT_SIZE_BY_DEFAULT)
@@ -152,8 +144,9 @@ class ScannerApp(App):
                                                        font_size=FONT_SIZE_BY_DEFAULT)
         self.last_saved_image_widget = LastSavedImage(pos_hint= {'center_x': 0.5, 'bottom': 0.0})
 
-        self.main_layout.add_widget(self.top_layout)
-        self.main_layout.add_widget(self.bottom_layout)
+        self.main_widget.add_widget(self.vbox_layout)
+        self.vbox_layout.add_widget(self.top_layout)
+        self.vbox_layout.add_widget(self.bottom_layout)
         self.top_layout.add_widget(self.top_label)
         self.bottom_layout.add_widget(self.frames_layout)
         self.bottom_layout.add_widget(self.right_panel_layout)
@@ -175,21 +168,25 @@ class ScannerApp(App):
         else:
             print('An attempt was made to save, but saving is paused')
 
-    _update_call_is_already_in_queue: bool = False
+    second_try_to_find_contours = None
     def update(self, delta):
-        self._update_call_is_already_in_queue = False
-
         if not self.camera.texture:
+            print('Camera image is not available')
             return
+
         self.frame = slu.convert_kivy_texture_to_cv2_frame(self.camera.texture)
+
         try:
-            self.contours_frame, self.main_contour_frame, self.result_frame = self.scanner.scan_process_frame(self.frame)
+            (self.contours_frame,
+             self.main_contour_frame,
+             self.result_frame) = self.scanner.scan_process_frame(self.frame)
         except su.ContourNotFoundError as e:
-            SECOND_TRY_TIMEOUT = 3 # in sec's
-            print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds')
-            if not self._update_call_is_already_in_queue:
-                Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
-                _update_call_is_already_in_queue = True
+            SECOND_TRY_TIMEOUT: int = 1 # in sec's
+            print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds, delta {round(delta)} seconds')
+            print(self.saving_is_active)
+            if self.second_try_to_find_contours == None:
+                self.second_try_to_find_contours = Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
+            else: self.second_try_to_find_contours()
         else:
             if self.previous_frame is None:
                 self._save_request(self.result_frame)
@@ -201,17 +198,13 @@ class ScannerApp(App):
                     self._save_request(self.result_frame)
         self._update_image_textures()
 
-    # def on_start(self):
-    #     # Request camera permission
-    #     if permission.check_permission('camera') != 'granted':
-    #         permission.request_permission('camera')
-    #     # Request storage permission (if saving frames)
-    #     if permission.check_permission('write_external_storage') != 'granted':
-    #         permission.request_permission('write_external_storage')
+    # def on_start(self): # Вызывается после build()
+    #     if permissions.check_permission('camera') != 'granted':
+    #         permissions.request_permission('camera')
+    #     if permissions.check_permission('write_external_storage') != 'granted':
+    #         permissions.request_permission('write_external_storage')
 
-    def build(self):
-        UPDATE_TIMEOUT: int = 1 # in sec's
-
+    def build(self): # Вызывается в САМОМ НАЧАЛЕ
         if platform == "win":
             self.saver = slu.PCSaver("ScannedImages")
         else:
@@ -227,10 +220,11 @@ class ScannerApp(App):
         self.init_widgets_and_layouts()
         self.saving_is_active = False
 
+        UPDATE_TIMEOUT: int = 4  # in sec's
         Clock.schedule_interval(self.update, UPDATE_TIMEOUT)
         self.update(delta= 1)
 
-        return self.main_layout
+        return self.main_widget
 
 if __name__ == "__main__":
     ScannerApp().run()
