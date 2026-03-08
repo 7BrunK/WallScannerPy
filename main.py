@@ -4,11 +4,12 @@ import ScannerUtlis as su
 import SaveLoadUtlis as slu
 from Scanner import Scanner
 
+from typing import Callable
 from kivy import platform
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.properties import BooleanProperty
 from kivy.graphics.texture import Texture
-from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
@@ -23,63 +24,78 @@ Window.size = (2340//2, 1080//2)
 IMAGE_BY_DEFAULT_PATH = 'image_not_found.jpg'
 FONT_SIZE_BY_DEFAULT = 16
 
+class BooleanObject(object):
+    def __init__(self, state: bool, on_changed_callback: Callable = None):
+        super(BooleanObject, self).__init__()
+        self._state: bool = state
+        self._callback = on_changed_callback
+
+    def _get_state_(self):
+        return self._state
+    def _set_state_(self, state: bool):
+        self._state = state
+        if self._callback != None: self._callback(self._state)
+    state = property(_get_state_, _set_state_)
+
 class ReportLabel(Label):
     def __init__(self, **kwargs):
         super(ReportLabel, self).__init__(**kwargs)
         self.background_color = [1, 1, 0, 1]
 
-    def update(self, saving_is_active: bool, ):
+    def update(self, saving_is_active: bool):
         self.text = f'Saving is active: {saving_is_active}'
 
-class ToggleDrawProcessButton(ToggleButton):
-    def __init__(self, owner_app: App, **kwargs):
-        super(ToggleDrawProcessButton, self).__init__(**kwargs)
-        self.owner_app = owner_app
-        self.normal_state()
+class ColoredToggleButton(ToggleButton):
+    ## Функции определяются в наследниках
+    _on_down_action: Callable
+    _on_normal_action: Callable
+
+    def __init__(self, down_text = 'Enabled', normal_text = 'Disabled', **kwargs):
+        super(ColoredToggleButton, self).__init__(**kwargs)
+        self.down_color = [0, 1, 0, 1]
+        self.normal_color = [1, 0, 0, 1]
+        self.down_text = down_text
+        self.normal_text = normal_text
+
+        self.on_release()
 
     def on_release(self):
-        if self.state == 'down': self.down_state()
-        else: self.normal_state()
+        if self.state == 'down':
+            self.background_color = self.down_color
+            self.text = self.down_text
+            self._on_down_action()
+        else:
+            self.background_color = self.normal_color
+            self.text = self.normal_text
+            self._on_normal_action()
 
-    def normal_state(self):
-        self.background_color = [1, 0, 0, 1]
-        self.text = 'DRAW PROCESS\nIS DISABLED'
-        for frame_image in self.owner_app.frame_images_list[1:]:
-            self.owner_app.frames_layout.remove_widget(frame_image)
+class ToggleDisplayProcessButton(ColoredToggleButton):
+    def __init__(self, frame_images: list, frames_layout, **kwargs):
+        self.frame_images = frame_images
+        self.frames_layout = frames_layout
+        super(ToggleDisplayProcessButton, self).__init__(down_text = 'DRAW PROCESS\nIS ENABLED',
+                                                         normal_text = 'DRAW PROCESS\nIS DISABLED', **kwargs)
+    def _on_down_action(self):
+        for frame_image in self.frame_images[1:]:
+            self.frames_layout.add_widget(frame_image)
+    def _on_normal_action(self):
+        for frame_image in self.frame_images[1:]:
+            self.frames_layout.remove_widget(frame_image)
 
-    def down_state(self):
-        self.background_color = [0, 1, 0, 1]
-        self.text = 'DRAW PROCESS\nIS ENABLED'
-        for frame_image in self.owner_app.frame_images_list[1:]:
-            self.owner_app.frames_layout.add_widget(frame_image)
-
-class ToggleSavingButton(ToggleButton):
-    def __init__(self, owner_app: App, **kwargs):
-        super(ToggleSavingButton, self).__init__(**kwargs)
-        self.owner_app = owner_app
-        self.normal_state()
-
-    def on_release(self):
-        if self.state == 'down': self.down_state()
-        else: self.normal_state()
-
-    def normal_state(self):
-        self.background_color = [1, 0, 0, 1]
-        self.text = 'SAVING IS\nPAUSED'
-        self.owner_app.saving_is_active = False
-
-    def down_state(self):
-        self.background_color = [0, 1, 0, 1]
-        self.text = 'SAVING IS\nACTIVE'
-        self.owner_app.saving_is_active = True
+class ToggleSavingButton(ColoredToggleButton):
+    def __init__(self, saving_is_active: BooleanObject, **kwargs):
+        self.saving_is_active = saving_is_active
+        super(ToggleSavingButton, self).__init__(down_text = 'SAVING IS\nACTIVE',
+                                                 normal_text = 'SAVING IS\nPAUSED', **kwargs)
+    def _on_down_action(self): self.saving_is_active.state = True
+    def _on_normal_action(self): self.saving_is_active.state = False
 
 class LastSavedImage(BoxLayout):
-    def __init__(self, texture = IMAGE_BY_DEFAULT_PATH, **kwargs):
+    def __init__(self, start_texture = IMAGE_BY_DEFAULT_PATH, **kwargs):
         super(LastSavedImage, self).__init__(**kwargs)
         self.orientation = 'vertical'
-
         self.image = Image(
-            source= texture,
+            source= start_texture,
             fit_mode= 'scale-down',
             size_hint= (1.0, None),
             pos_hint= {'top': 1.0, 'center_x': 0.5})
@@ -91,27 +107,31 @@ class LastSavedImage(BoxLayout):
             halign= 'center',
             size_hint= (None, None),
             pos_hint= {'top': 0.0, 'center_x': 0.5})
-
         self.add_widget(self.image)
         self.add_widget(self.label)
 
+    ## LastSavedImage не является наследником класса Image, но содержит экземпляр Image,
+    ## это мостик, чтобы обращаться напрямую к свойству texture дочернего Image объекта
     @property
     def texture(self):
         return self.image.texture
-
     @texture.setter
     def texture(self, texture):
         self.image.texture = texture
 
-class ScannerApp(App):
-    _saving_is_active: bool = False
-    def _get_saving_is_active_(self):
-        return self._saving_is_active
-    def _set_saving_is_active_(self, state):
-        self._saving_is_active = state
-        self.top_label.update(self._saving_is_active)
-    saving_is_active = property(_get_saving_is_active_, _set_saving_is_active_)
+# class InterfaceManager(BoxLayout):
+#     def __init__(self, **kwargs):
+#         super(InterfaceManager, self).__init__(**kwargs)
+#         self.forms = {}
+#
+#     def add_form(self, key, form):
+#         self.forms[key] = form
+#
+#     def uniCallback(self, button):
+#         self.clear_widgets()
+#         self.add_widget(self.forms[button.text])
 
+class ScannerApp(App):
     def _update_image_textures(self):
         for frame, index in zip([self.contours_frame, self.main_contour_frame, self.result_frame], range(1, 4)):
             try:
@@ -120,7 +140,6 @@ class ScannerApp(App):
                 self.frame_images_list[index].texture = Texture(source= IMAGE_BY_DEFAULT_PATH)
 
     def init_widgets_and_layouts(self):
-        self.main_widget = Widget()
         self.vbox_layout = BoxLayout(orientation='vertical')
         self.top_layout = BoxLayout(orientation='horizontal',
                                     size_hint=(1.0, None),
@@ -138,25 +157,25 @@ class ScannerApp(App):
         self.frame_images_list = [self.camera]  # [0] - camera frame
         for i in range(3): self.frame_images_list.append(Image(source= IMAGE_BY_DEFAULT_PATH, fit_mode= 'fill'))
 
-        self.toggle_draw_process_button = ToggleDrawProcessButton(owner_app=self,
-                                                                  font_size=FONT_SIZE_BY_DEFAULT)
-        self.toggle_saving_button = ToggleSavingButton(owner_app=self,
+        self.toggle_display_process_button = ToggleDisplayProcessButton(frame_images=self.frame_images_list,
+                                                                        frames_layout=self.frames_layout,
+                                                                        font_size=FONT_SIZE_BY_DEFAULT)
+        self.toggle_saving_button = ToggleSavingButton(saving_is_active=self.saving_is_active,
                                                        font_size=FONT_SIZE_BY_DEFAULT)
         self.last_saved_image_widget = LastSavedImage(pos_hint= {'center_x': 0.5, 'bottom': 0.0})
 
-        self.main_widget.add_widget(self.vbox_layout)
         self.vbox_layout.add_widget(self.top_layout)
         self.vbox_layout.add_widget(self.bottom_layout)
         self.top_layout.add_widget(self.top_label)
         self.bottom_layout.add_widget(self.frames_layout)
         self.bottom_layout.add_widget(self.right_panel_layout)
         self.frames_layout.add_widget(self.frame_images_list[0])
-        self.right_panel_layout.add_widget(self.toggle_draw_process_button)
+        self.right_panel_layout.add_widget(self.toggle_display_process_button)
         self.right_panel_layout.add_widget(self.toggle_saving_button)
         self.right_panel_layout.add_widget(self.last_saved_image_widget)
 
     def _save_request(self, frame):
-        if self.saving_is_active:
+        if self.saving_is_active.state:
             try:
                 self.saver.save_image(self.result_frame)
             except Exception as e:
@@ -183,7 +202,6 @@ class ScannerApp(App):
         except su.ContourNotFoundError as e:
             SECOND_TRY_TIMEOUT: int = 1 # in sec's
             print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds, delta {round(delta)} seconds')
-            print(self.saving_is_active)
             if self.second_try_to_find_contours == None:
                 self.second_try_to_find_contours = Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
             else: self.second_try_to_find_contours()
@@ -216,15 +234,16 @@ class ScannerApp(App):
         self.contours_frame = IMAGE_BY_DEFAULT
         self.main_contour_frame = IMAGE_BY_DEFAULT
         self.result_frame = IMAGE_BY_DEFAULT
+        self.saving_is_active = BooleanObject(state=False)
 
         self.init_widgets_and_layouts()
-        self.saving_is_active = False
+        self.saving_is_active._callback = self.top_label.update
 
         UPDATE_TIMEOUT: int = 4  # in sec's
         Clock.schedule_interval(self.update, UPDATE_TIMEOUT)
         self.update(delta= 1)
 
-        return self.main_widget
+        return self.vbox_layout
 
 if __name__ == "__main__":
     ScannerApp().run()

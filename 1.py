@@ -1,35 +1,14 @@
-from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.uix.image import Image
-from kivy.properties import ObjectProperty, NumericProperty, ReferenceListProperty
-from kivy.clock import Clock
-from kivy.graphics.texture import Texture
-from kivy.graphics import Color, Rectangle
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.button import Button
+import kivy
 from kivy.uix.label import Label
-from kivy.uix.checkbox import CheckBox
-from kivy.core.window import Window
-from kivy import platform
-from main import KivyCamera
-import cv2
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
+from kivy.app import App
+from main import BooleanObject
 
-import ScannerUtlis as su
-import SaveLoadUtlis as slu
-import numpy as np
-from Scanner import Scanner
+def smt(state):
+    print(state)
 
-class TestApp(App):
-    def build(self):
-        MAIN = BoxLayout(orientation='vertical')
-        camera = KivyCamera(capture= cv2.VideoCapture(0), fps=20)
-        self.saver = slu.PCSaver("ScannedImages")
-        self.saver.save_image(camera.texture)
-        MAIN.add_widget(camera)
-        print(platform)
-        return MAIN
-
-if __name__ == "__main__":
-    TestApp().run()
+saving = BooleanObject(state=False, on_changed_callback=smt)
+print(saving.state)
+saving.state = True
+saving.state = False
