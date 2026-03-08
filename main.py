@@ -122,14 +122,17 @@ class LastSavedImage(BoxLayout):
 # class InterfaceManager(BoxLayout):
 #     def __init__(self, **kwargs):
 #         super(InterfaceManager, self).__init__(**kwargs)
-#         self.forms = {}
+#         self.interfaces = {}
 #
-#     def add_form(self, key, form):
-#         self.forms[key] = form
+# class Interface(BoxLayout):
+#     def __init__(self, **kwargs):
+#         super(Interface, self).__init__(**kwargs)
 #
-#     def uniCallback(self, button):
-#         self.clear_widgets()
-#         self.add_widget(self.forms[button.text])
+#     def on_enter(self):
+#         pass
+#
+#     def on_exit(self):
+#         pass
 
 class ScannerApp(App):
     def _update_image_textures(self):
@@ -200,7 +203,7 @@ class ScannerApp(App):
              self.main_contour_frame,
              self.result_frame) = self.scanner.scan_process_frame(self.frame)
         except su.ContourNotFoundError as e:
-            SECOND_TRY_TIMEOUT: int = 1 # in sec's
+            SECOND_TRY_TIMEOUT: int = 3 # in sec's
             print(e, f'Try again in {SECOND_TRY_TIMEOUT} seconds, delta {round(delta)} seconds')
             if self.second_try_to_find_contours == None:
                 self.second_try_to_find_contours = Clock.schedule_once(self.update, SECOND_TRY_TIMEOUT)
@@ -239,7 +242,7 @@ class ScannerApp(App):
         self.init_widgets_and_layouts()
         self.saving_is_active._callback = self.top_label.update
 
-        UPDATE_TIMEOUT: int = 4  # in sec's
+        UPDATE_TIMEOUT: int = 5  # in sec's
         Clock.schedule_interval(self.update, UPDATE_TIMEOUT)
         self.update(delta= 1)
 
