@@ -5,8 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6eec897b-9700-4992-b7a0-53e5c7dba263" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/TestImages/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestImages/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestImages/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestImages/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestImages/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestImages/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestImages/7.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scanner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scanner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/1moved.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/1moved.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/42f757345835d2e04c650f7d9ca27b9a.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/42f757345835d2e04c650f7d9ca27b9a.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/7018f3ba-2c8d-4137-aa32-213740347cde.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/photo_5204194310901928338_y.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/photo_5204194310901928338_y.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/photo_5204194310901928339_y.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/photo_5204194310901928339_y.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/photo_5204194310901928340_y.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/photo_5204194310901928340_y.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484549_y.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/photo_5310276575725484549_y.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestImages/photo_5310276575725484550_y.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/photo_5310276575725484550_y.jpg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,34 +46,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.EbuchiyCalc.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.PathUtlis.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Scanner.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ScannerUtlis.executor&quot;: &quot;Run&quot;,
-    &quot;Python.checkbox.executor&quot;: &quot;Run&quot;,
-    &quot;Python.code_antona.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.pong.executor&quot;: &quot;Run&quot;,
-    &quot;Python.жалк.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/BrunK_Files/ForCode/Projects/WallScanerPy&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.1.executor": "Run",
+    "Python.EbuchiyCalc.executor": "Run",
+    "Python.Main.executor": "Run",
+    "Python.PathUtlis.executor": "Run",
+    "Python.Scanner.executor": "Run",
+    "Python.ScannerUtlis.executor": "Run",
+    "Python.checkbox.executor": "Run",
+    "Python.code_antona.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.pong.executor": "Run",
+    "Python.жалк.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/BrunK_Files/ForCode/Projects/WallScanerPy/TestImages",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy" />
       <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy\TestImages" />
+      <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy\Images" />
       <recent name="D:\BrunK_Files\ForCode\Projects\WallScanerPy\TestImages" />
     </key>
   </component>

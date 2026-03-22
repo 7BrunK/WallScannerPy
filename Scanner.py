@@ -80,7 +80,7 @@ if __name__ == '__main__':
         except su.ContourNotFoundError as e:
             print(e)
             if not CAM_FEED:
-                index_of_test_image -= 1
+                index_of_test_image += 1
                 print('Image skipped')
             continue
 
